@@ -1,0 +1,16 @@
+<project name="shypl-common" basedir="." default="build">
+
+	<target name="build">
+		<delete file="bin/shypl-common.phar"/>
+
+		<exec executable="phar" failonerror="true">
+			<arg value="pack"/>
+			<arg value="-s"/>
+			<arg value="build/stub.php"/>
+			<arg value="-f"/>
+			<arg value="bin/shypl-common.phar"/>
+			<arg value="src"/>
+		</exec>
+	</target>
+
+</project>
