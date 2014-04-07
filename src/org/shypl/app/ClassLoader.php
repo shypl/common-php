@@ -1,5 +1,5 @@
 <?php
-namespace org\shypl\sys;
+namespace org\shypl\app;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -114,7 +114,7 @@ final class ClassLoader
 		}
 
 		foreach ($this->_paths as $path) {
-			if ($this->_loadFile($class, $path . '/' . strtr($class, array('\\' => '/')))) {
+			if ($this->_loadFile($class, $path . '/' . strtr($class, array('\\' => '/', '_' => '/')))) {
 				return true;
 			}
 		}
@@ -136,25 +136,29 @@ final class ClassLoader
 			$path = substr($path, 7);
 		}
 
-		$realPath = realpath($path);
-		if (!$realPath) {
-			throw new InvalidArgumentException('Path is not exists: ' . $path);
+		try {
+			$realPath = realpath($path);
+		}
+		catch (\Exception $e) {
+			return;
 		}
 
-		if (!$phar && is_file($realPath)) {
-			$phar = true;
-		}
+		if ($realPath) {
+			if (!$phar && is_file($realPath)) {
+				$phar = true;
+			}
 
-		if ($phar) {
-			$realPath = 'phar://' . $realPath;
-		}
+			if ($phar) {
+				$realPath = 'phar://' . $realPath;
+			}
 
-		if (!in_array($realPath, $this->_paths)) {
-			$this->_paths[] = $realPath;
-		}
+			if (!in_array($realPath, $this->_paths)) {
+				$this->_paths[] = $realPath;
+			}
 
-		if ($setInclude) {
-			set_include_path($realPath . PATH_SEPARATOR . get_include_path());
+			if ($setInclude) {
+				set_include_path($realPath . PATH_SEPARATOR . get_include_path());
+			}
 		}
 	}
 

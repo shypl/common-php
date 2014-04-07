@@ -1,5 +1,5 @@
 <?php
-namespace org\shypl\sys;
+namespace org\shypl\app;
 
 use ErrorException;
 use Exception;
