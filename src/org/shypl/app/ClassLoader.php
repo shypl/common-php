@@ -9,7 +9,7 @@ final class ClassLoader
 	/**
 	 * @var ClassLoader
 	 */
-	static private $_instance;
+	static private $instance;
 
 	/**
 	 * @param string $cacheFile
@@ -19,11 +19,11 @@ final class ClassLoader
 	 */
 	static public function init($cacheFile = null)
 	{
-		if (null !== self::$_instance) {
+		if (null !== self::$instance) {
 			throw new RuntimeException('ClassLoader already initialized');
 		}
-		self::$_instance = new ClassLoader($cacheFile);
-		return self::$_instance;
+		self::$instance = new ClassLoader($cacheFile);
+		return self::$instance;
 	}
 
 	/**
@@ -32,39 +32,39 @@ final class ClassLoader
 	 */
 	static public function instance()
 	{
-		if (null === self::$_instance) {
+		if (null === self::$instance) {
 			throw new RuntimeException('ClassLoader is not initialized');
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
 	 * @var string
 	 */
-	private $_cacheFile;
+	private $cacheFile;
 
 	/**
 	 * @var array
 	 */
-	private $_cache = array();
+	private $cache = array();
 
 	/**
 	 * @var array
 	 */
-	private $_paths = array();
+	private $paths = array();
 
 	/**
 	 * @param string $cacheFile
 	 */
 	private function __construct($cacheFile = null)
 	{
-		$this->_loadIncludePaths();
+		$this->loadIncludePaths();
 		$this->addPath(dirname(dirname(dirname(dirname(__DIR__)))));
 
 		// cache
 		if ($cacheFile !== null) {
-			$this->_cacheFile = $cacheFile;
-			$this->_loadCache();
+			$this->cacheFile = $cacheFile;
+			$this->loadCache();
 		}
 
 		// register auto load
@@ -76,7 +76,7 @@ final class ClassLoader
 	 */
 	public function addPath($path)
 	{
-		$this->_addPath($path, true);
+		$this->addPath0($path, true);
 	}
 
 	/**
@@ -105,16 +105,16 @@ final class ClassLoader
 			}
 		}
 
-		if ($this->_checkExists($class)) {
+		if ($this->checkExists($class)) {
 			return true;
 		}
 
-		if ($this->_loadFromCache($class)) {
+		if ($this->loadFromCache($class)) {
 			return true;
 		}
 
-		foreach ($this->_paths as $path) {
-			if ($this->_loadFile($class, $path . '/' . strtr($class, array('\\' => '/', '_' => '/')))) {
+		foreach ($this->paths as $path) {
+			if ($this->loadFile($class, $path . '/' . strtr($class, array('\\' => '/', '_' => '/')))) {
 				return true;
 			}
 		}
@@ -128,7 +128,7 @@ final class ClassLoader
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	private function _addPath($path, $setInclude)
+	private function addPath0($path, $setInclude)
 	{
 		$phar = strpos($path, 'phar://') === 0;
 
@@ -152,8 +152,8 @@ final class ClassLoader
 				$realPath = 'phar://' . $realPath;
 			}
 
-			if (!in_array($realPath, $this->_paths)) {
-				$this->_paths[] = $realPath;
+			if (!in_array($realPath, $this->paths)) {
+				$this->paths[] = $realPath;
 			}
 
 			if ($setInclude) {
@@ -165,11 +165,11 @@ final class ClassLoader
 	/**
 	 *
 	 */
-	private function _loadIncludePaths()
+	private function loadIncludePaths()
 	{
 		foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
 			if ($path != '.') {
-				$this->_addPath($path, false);
+				$this->addPath0($path, false);
 			}
 		}
 	}
@@ -177,21 +177,21 @@ final class ClassLoader
 	/**
 	 *
 	 */
-	private function _loadCache()
+	private function loadCache()
 	{
 		clearstatcache();
 
-		if ($this->_cacheFile !== null) {
-			if (file_exists($this->_cacheFile)) {
+		if ($this->cacheFile !== null) {
+			if (file_exists($this->cacheFile)) {
 				/** @noinspection PhpIncludeInspection */
-				$this->_cache = include($this->_cacheFile);
+				$this->cache = include($this->cacheFile);
 			}
-			if (!is_array($this->_cache)) {
-				$this->_cache = array();
+			if (!is_array($this->cache)) {
+				$this->cache = array();
 			}
 		}
 		else {
-			$this->_cache = array();
+			$this->cache = array();
 		}
 	}
 
@@ -200,7 +200,7 @@ final class ClassLoader
 	 *
 	 * @return bool
 	 */
-	private function _checkExists($class)
+	private function checkExists($class)
 	{
 		return class_exists($class) || interface_exists($class);
 	}
@@ -210,19 +210,19 @@ final class ClassLoader
 	 *
 	 * @return bool
 	 */
-	private function _loadFromCache($class)
+	private function loadFromCache($class)
 	{
-		if (isset($this->_cache[$class])) {
-			$file = $this->_cache[$class];
+		if (isset($this->cache[$class])) {
+			$file = $this->cache[$class];
 			if (file_exists($file)) {
 				/** @noinspection PhpIncludeInspection */
 				include $file;
-				if ($this->_checkExists($class)) {
+				if ($this->checkExists($class)) {
 					return true;
 				}
 			}
-			unset($this->_cache[$class]);
-			$this->_saveCache();
+			unset($this->cache[$class]);
+			$this->saveCache();
 		}
 		return false;
 	}
@@ -230,31 +230,30 @@ final class ClassLoader
 	/**
 	 * @throws \RuntimeException
 	 */
-	private function _saveCache()
+	private function saveCache()
 	{
-		if ($this->_cacheFile !== null) {
+		if ($this->cacheFile !== null) {
 			clearstatcache();
 
-			if (is_writable(dirname($this->_cacheFile))) {
-				$new = !file_exists($this->_cacheFile);
-				$data = '<?php' . "\n" . 'return ' . var_export($this->_cache, true) . ';';
-				$file = fopen($this->_cacheFile, 'c');
+			if (is_writable(dirname($this->cacheFile))) {
+				$new = !file_exists($this->cacheFile);
+				$data = '<?php' . "\n" . 'return ' . var_export($this->cache, true) . ';';
+				$file = fopen($this->cacheFile, 'c');
 
 				if (flock($file, LOCK_EX | LOCK_NB)) {
 					ftruncate($file, 0);
 					fwrite($file, $data);
 					fflush($file);
 					if ($new) {
-						chmod($this->_cacheFile, 0664);
+						chmod($this->cacheFile, 0664);
 					}
 					flock($file, LOCK_UN);
 				}
 
 				fclose($file);
-
 			}
 			else {
-				throw new \RuntimeException('Can not write cache file:  ' . $this->_cacheFile);
+				throw new \RuntimeException('Can not write cache file:  ' . $this->cacheFile);
 			}
 		}
 	}
@@ -265,14 +264,14 @@ final class ClassLoader
 	 *
 	 * @return bool
 	 */
-	private function _loadFile($class, $path)
+	private function loadFile($class, $path)
 	{
 		$file = $path . '.php';
 		if (file_exists($file)) {
 			/** @noinspection PhpIncludeInspection */
 			include $file;
-			if ($this->_checkExists($class)) {
-				$this->_addToCache($class, $file);
+			if ($this->checkExists($class)) {
+				$this->addToCache($class, $file);
 				return true;
 			}
 		}
@@ -283,9 +282,9 @@ final class ClassLoader
 	 * @param string $class
 	 * @param string $file
 	 */
-	private function _addToCache($class, $file)
+	private function addToCache($class, $file)
 	{
-		$this->_cache[$class] = $file;
-		$this->_saveCache();
+		$this->cache[$class] = $file;
+		$this->saveCache();
 	}
 }

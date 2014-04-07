@@ -13,63 +13,64 @@ final class Kernel
 	const ENV_LOCAL = 'local';
 	const ENV_TEST = 'test';
 	const ENV_PROD = 'prod';
+
 	/**
 	 * @var
 	 */
-	private static $_inited;
+	private static $inited;
 	/**
 	 * @var string
 	 */
-	private static $_path;
+	private static $path;
 	/**
 	 * @var bool
 	 */
-	private static $_cliMode;
+	private static $cliMode;
 	/**
 	 * @var string
 	 */
-	private static $_env;
+	private static $env;
 	/**
 	 * @var bool
 	 */
-	private static $_devMode;
+	private static $devMode;
 	/**
 	 * @var FileCache
 	 */
-	private static $_cache;
+	private static $cache;
 	/**
 	 * @var array
 	 */
-	private static $_configs = array();
+	private static $configs = array();
 
 	/**
 	 * @param string $path
 	 */
 	public static function init($path)
 	{
-		if (self::$_inited) {
+		if (self::$inited) {
 			throw new RuntimeException();
 		}
-		self::$_inited = true;
+		self::$inited = true;
 
 		ini_set('display_errors', true);
 
-		self::$_path = realpath($path);
+		self::$path = realpath($path);
 
-		if (!self::$_path || !is_dir(self::$_path)) {
+		if (!self::$path || !is_dir(self::$path)) {
 			throw new \InvalidArgumentException('Directory "' . $path . '" not found');
 		}
 
 		require(__DIR__ . '/../trace.php');
 
-		self::$_cliMode = PHP_SAPI === 'cli';
-		self::$_env = file_get_contents(self::path('env'));
-		self::$_devMode = self::$_env !== self::ENV_PROD;
+		self::$cliMode = PHP_SAPI === 'cli';
+		self::$env = file_get_contents(self::path('env'));
+		self::$devMode = self::$env !== self::ENV_PROD;
 
-		ErrorHandler::init(self::$_devMode, self::path('log/error-{date}.log'));
+		ErrorHandler::init(self::$devMode, self::path('log/error-{date}.log'));
 		ClassLoader::init(self::path('cache/classes.php'));
 
-		self::$_cache = new FileCache(self::path('cache'));
+		self::$cache = new FileCache(self::path('cache'));
 	}
 
 	/**
@@ -77,7 +78,7 @@ final class Kernel
 	 */
 	public static function isCliMode()
 	{
-		return self::$_cliMode;
+		return self::$cliMode;
 	}
 
 	/**
@@ -85,7 +86,7 @@ final class Kernel
 	 */
 	public static function isDevMode()
 	{
-		return self::$_devMode;
+		return self::$devMode;
 	}
 
 	/**
@@ -95,7 +96,7 @@ final class Kernel
 	 */
 	public static function path($target)
 	{
-		return self::$_path . '/' . $target;
+		return self::$path . '/' . $target;
 	}
 
 	/**
@@ -105,16 +106,16 @@ final class Kernel
 	 */
 	public static function config($name)
 	{
-		if (!isset(self::$_configs[$name])) {
-			$file = self::path('config/' . self::$_env . '/' . $name . '.yml');
+		if (!isset(self::$configs[$name])) {
+			$file = self::path('config/' . self::$env . '/' . $name . '.yml');
 			if (!file_exists($file)) {
 				$file = self::path('config/' . $name . '.yml');
 			}
 			return
-				self::$_configs[$name] = new Config(self::$_cache, $file, Config::COMPILER_YAML, self::$_devMode, true);
+				self::$configs[$name] = new Config(self::$cache, $file, Config::COMPILER_YAML, self::$devMode, true);
 		}
 
-		return self::$_configs[$name];
+		return self::$configs[$name];
 	}
 
 	/**
@@ -122,7 +123,7 @@ final class Kernel
 	 */
 	public static function cache()
 	{
-		return self::$_cache;
+		return self::$cache;
 	}
 
 	/**

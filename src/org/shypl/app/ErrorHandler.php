@@ -10,7 +10,7 @@ final class ErrorHandler
 	/**
 	 * @var array
 	 */
-	static protected $_errorTypes = array(
+	static protected $errorTypes = array(
 		E_ERROR             => 'E_ERROR',
 		E_WARNING           => 'E_WARNING',
 		E_PARSE             => 'E_PARSE',
@@ -31,7 +31,7 @@ final class ErrorHandler
 	/**
 	 * @var ErrorHandler
 	 */
-	static private $_instance;
+	static private $instance;
 
 	/**
 	 * @param bool   $displayErrors
@@ -42,11 +42,11 @@ final class ErrorHandler
 	 */
 	static public function init($displayErrors, $logFile = null)
 	{
-		if (self::$_instance) {
+		if (self::$instance) {
 			throw new RuntimeException('ErrorHandler already initialized');
 		}
-		self::$_instance = new ErrorHandler($displayErrors, $logFile);
-		return self::$_instance;
+		self::$instance = new ErrorHandler($displayErrors, $logFile);
+		return self::$instance;
 	}
 
 	/**
@@ -55,8 +55,8 @@ final class ErrorHandler
 	 */
 	static public function instance()
 	{
-		if (self::$_instance) {
-			return self::$_instance;
+		if (self::$instance) {
+			return self::$instance;
 		}
 		throw new RuntimeException('ErrorHandler is not initialized');
 	}
@@ -133,7 +133,7 @@ final class ErrorHandler
 		$this->logException($exception);
 
 		if (!$this->_display) {
-			$this->_display("Server error.");
+			$this->display("Server error.");
 		}
 
 		exit(1);
@@ -152,7 +152,7 @@ final class ErrorHandler
 	 */
 	public function logException(Exception $exception)
 	{
-		$log = '[' . $this->_date('Y-m-d H:i:s.u') . '] ';
+		$log = '[' . $this->getDate('Y-m-d H:i:s.u') . '] ';
 		$closure = false;
 
 		do {
@@ -160,7 +160,7 @@ final class ErrorHandler
 				$log .= "^\n";
 			}
 
-			$log .= $this->_type($exception)
+			$log .= $this->extractType($exception)
 				. ': ' . $exception->getMessage() . "\n";
 
 			if ($exception instanceof FatalErrorException) {
@@ -175,13 +175,13 @@ final class ErrorHandler
 		while ($exception);
 
 		if ($this->_display) {
-			$this->_display($log);
+			$this->display($log);
 		}
 
 		if ($this->_logFile) {
 
 			if ($this->_logFileHasDate) {
-				$file = str_replace('{date}', $this->_date('Ymd'), $this->_logFile);
+				$file = str_replace('{date}', $this->getDate('Ymd'), $this->_logFile);
 			}
 			else {
 				$file = $this->_logFile;
@@ -205,7 +205,7 @@ final class ErrorHandler
 
 			}
 			else {
-				$this->_display('Can not write log file (' . $file . ')');
+				$this->display('Can not write log file (' . $file . ')');
 			}
 		}
 	}
@@ -213,7 +213,7 @@ final class ErrorHandler
 	/**
 	 * @param string $log
 	 */
-	private function _display($log)
+	private function display($log)
 	{
 		if (!$this->_cli && !headers_sent()) {
 			header('Content-Type: text/plain', true, 500);
@@ -232,7 +232,7 @@ final class ErrorHandler
 	 *
 	 * @return string
 	 */
-	private function _date($format)
+	private function getDate($format)
 	{
 		$time = explode(' ', microtime());
 
@@ -261,14 +261,14 @@ final class ErrorHandler
 	 *
 	 * @return string
 	 */
-	private function _type(Exception $exception)
+	private function extractType(Exception $exception)
 	{
 		$type = get_class($exception);
 
 		if ($exception instanceof ErrorException) {
 			$severity = $exception->getSeverity();
-			if (isset(static::$_errorTypes[$severity])) {
-				$type = static::$_errorTypes[$severity];
+			if (isset(static::$errorTypes[$severity])) {
+				$type = static::$errorTypes[$severity];
 			}
 			else {
 				$type .= ':' . $severity;

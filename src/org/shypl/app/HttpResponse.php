@@ -44,19 +44,19 @@ class HttpResponse
 	/**
 	 * @var int
 	 */
-	private $_code;
+	private $code;
 	/**
 	 * @var array
 	 */
-	private $_headers = array();
+	private $headers = array();
 	/**
 	 * @var array
 	 */
-	private $_cookies = array();
+	private $cookies = array();
 	/**
 	 * @var string
 	 */
-	private $_body;
+	private $body;
 
 	/**
 	 * @param string $body
@@ -64,8 +64,8 @@ class HttpResponse
 	 */
 	public function __construct($body = null, $code = 200)
 	{
-		$this->_body = $body;
-		$this->_code = $code;
+		$this->body = $body;
+		$this->code = $code;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class HttpResponse
 	 */
 	public function setCode($code)
 	{
-		$this->_code = $code;
+		$this->code = $code;
 	}
 
 	/**
@@ -82,7 +82,7 @@ class HttpResponse
 	 */
 	public function setHeader($name, $value)
 	{
-		$this->_headers[$name] = $value;
+		$this->headers[$name] = $value;
 	}
 
 	/**
@@ -90,7 +90,7 @@ class HttpResponse
 	 */
 	public function code()
 	{
-		return $this->_code;
+		return $this->code;
 	}
 
 	/**
@@ -102,10 +102,9 @@ class HttpResponse
 	 * @param bool   $secure
 	 * @param bool   $httpOnly
 	 */
-	public function setCookie($name, $value, $expire = 0, $path = '/', $domain = null, $secure = false,
-		$httpOnly = false)
+	public function setCookie($name, $value, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = false)
 	{
-		$this->_cookies[$name] = array($value, $expire, $path, $domain, $secure, $httpOnly);
+		$this->cookies[$name] = array($value, $expire, $path, $domain, $secure, $httpOnly);
 	}
 
 	/**
@@ -113,7 +112,7 @@ class HttpResponse
 	 */
 	public function setBody($value)
 	{
-		$this->_body = $value;
+		$this->body = $value;
 	}
 
 	/**
@@ -121,25 +120,25 @@ class HttpResponse
 	 */
 	public function body()
 	{
-		return $this->_body;
+		return $this->body;
 	}
 
 	/**
 	 */
 	public function send()
 	{
-		header('HTTP/1.1 ' . $this->_code);
+		header('HTTP/1.1 ' . $this->code);
 
-		foreach ($this->_headers as $name => $value) {
+		foreach ($this->headers as $name => $value) {
 			header($name . ': ' . $value, true);
 		}
 
-		foreach ($this->_cookies as $name => $cookie) {
+		foreach ($this->cookies as $name => $cookie) {
 			setcookie($name, $cookie[0], $cookie[1], $cookie[2], $cookie[3], $cookie[4], $cookie[5]);
 		}
 
-		if ($this->_body !== null) {
-			echo $this->_body;
+		if ($this->body !== null) {
+			echo $this->body;
 		}
 
 		return $this;

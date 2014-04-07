@@ -6,84 +6,84 @@ class HttpRequest
 	/**
 	 * @var string
 	 */
-	private $_method;
+	private $method;
 	/**
 	 * @var string
 	 */
-	private $_scheme;
+	private $scheme;
 	/**
 	 * @var string
 	 */
-	private $_host;
+	private $host;
 	/**
 	 * @var string
 	 */
-	private $_path;
+	private $path;
 	/**
 	 * @var array
 	 */
-	private $_pathParts;
+	private $pathParts;
 	/**
 	 * @var string
 	 */
-	private $_query;
+	private $query;
 	/**
 	 * @var string
 	 */
-	private $_rootPath;
+	private $rootPath;
 	/**
 	 * @var int
 	 */
-	private $_rootIndex;
+	private $rootIndex;
 	/**
 	 * @var array
 	 */
-	private $_params = array();
+	private $params = array();
 	/**
 	 * @var array
 	 */
-	private $_cookies = array();
+	private $cookies = array();
 
 	/**
-	 * @throws RuntimeException
+	 *
 	 */
 	public function __construct()
 	{
 		// method
-		$this->_method = $_SERVER['REQUEST_METHOD'];
+		$this->method = $_SERVER['REQUEST_METHOD'];
 
 		// scheme
-		$this->_scheme = isset($_SERVER['HTTP_SCHEME'])
+		$this->scheme = isset($_SERVER['HTTP_SCHEME'])
 			? $_SERVER['HTTP_SCHEME']
 			: (((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || 443 == $_SERVER['SERVER_PORT'])
 				? 'https' : 'http');
 
 		// host
-		$this->_host = $_SERVER['HTTP_HOST'];
+		$this->host = $_SERVER['HTTP_HOST'];
 
 		// path
-		$this->_path = trim(parse_url(preg_replace('/\/\/+/', '/', $_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
-		$this->_pathParts = empty($this->_path) ? array() : explode('/', $this->_path);
+		$this->path = trim(parse_url(preg_replace('/\/\/+/', '/', $_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
+		$this->pathParts = empty($this->path) ? array() : explode('/', $this->path);
 
 		// query
-		$this->_query = $_SERVER['QUERY_STRING'];
+		$this->query = $_SERVER['QUERY_STRING'];
 
 		// root
 		$tmp = $_SERVER['SCRIPT_NAME'];
-		$this->_rootPath = substr($tmp, 0, strrpos($tmp, '/'));
-		$this->_rootIndex = substr_count($this->_rootPath, '/');
+		$this->rootPath = substr($tmp, 0, strrpos($tmp, '/'));
+		$this->rootIndex = substr_count($this->rootPath, '/');
 
 		// params
 		foreach ($_GET as $name => $value) {
-			$this->_params[$name] = $value;
+			$this->params[$name] = $value;
 		}
 		foreach ($_POST as $name => $value) {
-			$this->_params[$name] = $value;
+			$this->params[$name] = $value;
 		}
 
 		// cookies
 		foreach ($_COOKIE as $key => $value) {
-			$this->_cookies[$key] = $value;
+			$this->cookies[$key] = $value;
 		}
 	}
 
@@ -92,7 +92,7 @@ class HttpRequest
 	 */
 	public function method()
 	{
-		return $this->_method;
+		return $this->method;
 	}
 
 	/**
@@ -100,7 +100,7 @@ class HttpRequest
 	 */
 	public function scheme()
 	{
-		return $this->_scheme;
+		return $this->scheme;
 	}
 
 	/**
@@ -108,7 +108,7 @@ class HttpRequest
 	 */
 	public function host()
 	{
-		return $this->_host;
+		return $this->host;
 	}
 
 	/**
@@ -120,15 +120,15 @@ class HttpRequest
 	public function path($toPart = 0, $atRoot = true)
 	{
 		if ($toPart == 0 && $atRoot) {
-			return $this->_rootPath;
+			return $this->rootPath;
 		}
 
-		$path = $atRoot ? $this->_rootPath : '';
-		$from = $atRoot ? $this->_rootIndex : 0;
+		$path = $atRoot ? $this->rootPath : '';
+		$from = $atRoot ? $this->rootIndex : 0;
 		$to = $from + $toPart;
 
 		for ($i = $from; $i <= $to; ++$i) {
-			$path .= '/' . $this->_pathParts[$i];
+			$path .= '/' . $this->pathParts[$i];
 		}
 
 		return $path;
@@ -143,10 +143,10 @@ class HttpRequest
 	public function pathPart($part, $atRoot = true)
 	{
 		if ($atRoot) {
-			$part += $this->_rootIndex;
+			$part += $this->rootIndex;
 		}
 
-		return isset($this->_pathParts[$part]) ? $this->_pathParts[$part] : null;
+		return isset($this->pathParts[$part]) ? $this->pathParts[$part] : null;
 	}
 
 	/**
@@ -154,7 +154,7 @@ class HttpRequest
 	 */
 	public function query()
 	{
-		return $this->_query;
+		return $this->query;
 	}
 
 	/**
@@ -162,7 +162,7 @@ class HttpRequest
 	 */
 	public function isPost()
 	{
-		return $this->_method === 'POST';
+		return $this->method === 'POST';
 	}
 
 	/**
@@ -173,7 +173,25 @@ class HttpRequest
 	 */
 	public function param($name, $default = null)
 	{
-		return isset($this->_params[$name]) ? $this->_params[$name] : $default;
+		return isset($this->params[$name]) ? $this->params[$name] : $default;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function params()
+	{
+		return $this->params;
+	}
+
+	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public function hasParam($name)
+	{
+		return isset($this->params[$name]);
 	}
 
 	/**
@@ -184,6 +202,6 @@ class HttpRequest
 	 */
 	public function cookie($name, $default = null)
 	{
-		return isset($this->_cookies[$name]) ? $this->_cookies[$name] : $default;
+		return isset($this->cookies[$name]) ? $this->cookies[$name] : $default;
 	}
 }
