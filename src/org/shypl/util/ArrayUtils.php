@@ -1,5 +1,5 @@
 <?php
-namespace org\shypl\common\util;
+namespace org\shypl\util;
 
 class ArrayUtils
 {
