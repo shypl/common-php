@@ -1,4 +1,4 @@
-<project name="shypl-common" basedir="." default="build">
+<project name="Shypl PHP library" default="build">
 
 	<target name="build">
 		<delete file="bin/shypl-common.phar"/>
