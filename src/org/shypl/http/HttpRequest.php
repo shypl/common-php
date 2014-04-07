@@ -37,8 +37,8 @@ class HttpRequest extends HttpMessage
 		$url = parse_url($url);
 
 		$this->_protocol = $url['scheme'];
-		$this->_host     = $url['host'];
-		$this->_path     = isset($url['path']) ? preg_replace('#//+#', '/', $url['path']) : '';
+		$this->_host = $url['host'];
+		$this->_path = isset($url['path']) ? preg_replace('#//+#', '/', $url['path']) : '';
 
 		if (isset($url['query'])) {
 			parse_str($url['query'], $this->_params);
@@ -96,5 +96,14 @@ class HttpRequest extends HttpMessage
 	public function params()
 	{
 		return $this->_params;
+	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function containsParam($name)
+	{
+		return isset($this->_params[$name]);
 	}
 }
