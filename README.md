@@ -1,2 +1,2 @@
-Shypl PHP library
+Shypl PHP common library
 ==========
