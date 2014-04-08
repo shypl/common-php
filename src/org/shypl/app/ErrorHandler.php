@@ -143,6 +143,7 @@ final class ErrorHandler
 	{
 		$error = error_get_last();
 		if ($error) {
+			include_once 'FatalErrorException.php';
 			$this->handleException(new FatalErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
 		}
 	}

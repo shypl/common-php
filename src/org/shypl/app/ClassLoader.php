@@ -59,7 +59,7 @@ final class ClassLoader
 	private function __construct($cacheFile = null)
 	{
 		$this->loadIncludePaths();
-		$this->addPath(dirname(dirname(dirname(dirname(__DIR__)))));
+		$this->addPath(dirname(dirname(dirname(__DIR__))));
 
 		// cache
 		if ($cacheFile !== null) {
@@ -168,7 +168,7 @@ final class ClassLoader
 	private function loadIncludePaths()
 	{
 		foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
-			if ($path != '.') {
+			if ($path != '.' && $path != '') {
 				$this->addPath0($path, false);
 			}
 		}
