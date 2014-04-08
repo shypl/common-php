@@ -59,7 +59,7 @@ final class ClassLoader
 	private function __construct($cacheFile = null)
 	{
 		$this->loadIncludePaths();
-		$this->addPath(dirname(dirname(dirname(__DIR__))));
+		$this->addPath(dirname(dirname(dirname(dirname(__DIR__)))));
 
 		// cache
 		if ($cacheFile !== null) {
