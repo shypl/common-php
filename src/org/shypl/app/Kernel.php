@@ -64,7 +64,7 @@ final class Kernel
 		require(__DIR__ . '/../trace.php');
 
 		self::$cliMode = PHP_SAPI === 'cli';
-		self::$env = file_get_contents(self::path('env'));
+		self::$env = file_get_contents(self::path('config/env'));
 		self::$devMode = self::$env !== self::ENV_PROD;
 
 		ErrorHandler::init(self::$devMode, self::path('log/error-{date}.log'));
