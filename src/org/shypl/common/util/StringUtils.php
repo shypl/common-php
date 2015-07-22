@@ -1,8 +1,7 @@
 <?php
 namespace org\shypl\common\util;
 
-class StringUtils
-{
+final class StringUtils {
 	/**
 	 * @param string $string
 	 * @param string $needle
@@ -10,8 +9,7 @@ class StringUtils
 	 *
 	 * @return int
 	 */
-	static public function bytePos($string, $needle, $offset = 0)
-	{
+	public static function bytePos($string, $needle, $offset = 0) {
 		return mb_strpos($string, $needle, $offset, 'ASCII');
 	}
 
@@ -21,9 +19,8 @@ class StringUtils
 	 *
 	 * @return array
 	 */
-	static public function toBytes($string, $hex = false)
-	{
-		$bytes = array();
+	public static function toBytes($string, $hex = false) {
+		$bytes = [];
 		for ($i = 0, $l = self::byteLen($string); $i < $l; $i++) {
 			$byte = ord(self::byteCut($string, $i, 1));
 			if ($hex) {
@@ -40,8 +37,7 @@ class StringUtils
 	 *
 	 * @return int
 	 */
-	static public function byteLen($string)
-	{
+	public static function byteLen($string) {
 		return mb_strlen($string, 'ASCII');
 	}
 
@@ -52,8 +48,7 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function byteCut($string, $offset, $length = null)
-	{
+	public static function byteCut($string, $offset, $length = null) {
 		if (null === $length) {
 			$length = self::byteLen($string);
 		}
@@ -66,14 +61,13 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function toCamelCase($string, $lowFirst = false)
-	{
+	public static function toCamelCase($string, $lowFirst = false) {
 		$string = trim($string);
 		if ($string === '') {
 			return '';
 		}
 
-		$string = str_replace(array('_', '-'), ' ', $string);
+		$string = str_replace(['_', '-'], ' ', $string);
 		$string = ucwords($string);
 		$string = str_replace(' ', '', $string);
 
@@ -90,8 +84,7 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function toEmphasisCase($string, $sep = '_')
-	{
+	public static function toEmphasisCase($string, $sep = '_') {
 		$string = preg_replace('/[A-Z\d]/', $sep . '$0', $string);
 		$string = ltrim($string, $sep);
 		$string = strtolower($string);
@@ -103,8 +96,7 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function toPlural($string)
-	{
+	public static function toPlural($string) {
 		$last = substr($string, -1);
 		if ($last === 'y') {
 			$string = substr($string, 0, -1) . 'ies';
@@ -121,8 +113,7 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function toSingular($string)
-	{
+	public static function toSingular($string) {
 		if (substr($string, -3) === 'ies') {
 			return substr($string, 0, -3) . 'y';
 		}
@@ -139,8 +130,7 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function getNumberLabel($number, array $labels)
-	{
+	public static function getNumberLabel($number, array $labels) {
 		if ($number > 10 && $number < 15) {
 			return $labels[2];
 		}
@@ -166,8 +156,7 @@ class StringUtils
 	 *
 	 * @return string
 	 */
-	static public function formatNumber($number, $decimals = 0, $decPoint = '.', $thousandsSep = ' ')
-	{
+	public static function formatNumber($number, $decimals = 0, $decPoint = '.', $thousandsSep = ' ') {
 		return number_format($number, $decimals, $decPoint, $thousandsSep);
 	}
 }

@@ -1,2 +1,0 @@
-Shypl PHP common library
-==========
