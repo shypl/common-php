@@ -112,7 +112,7 @@ final class ClassLoader {
 		}
 
 		if ($realPath) {
-			if (!$phar && is_file($realPath)) {
+			if (!$phar) {
 				if (is_file($realPath)) {
 					$phar = true;
 				}
