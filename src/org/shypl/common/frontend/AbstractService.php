@@ -21,14 +21,39 @@ abstract class AbstractService {
 	 *
 	 * @return HttpResponse
 	 */
-	public function processRequest(HttpRequest $request, ActionPath $path) {
+	public function processActionRequest(HttpRequest $request, ActionPath $path) {
+		$this->handleRequest($request);
+		$response = $this->processAction($request, $path);
+		$this->handleResponse($response);
+		return $response;
+	}
+
+	/**
+	 * @param HttpRequest $request
+	 */
+	protected function handleRequest(HttpRequest $request) {
+	}
+
+	/**
+	 * @param HttpResponse $response
+	 */
+	protected function handleResponse(HttpResponse $response) {
+	}
+
+	/**
+	 * @param HttpRequest $request
+	 * @param ActionPath  $path
+	 *
+	 * @return HttpResponse
+	 */
+	protected function processAction(HttpRequest $request, ActionPath $path) {
 		if ($path->hasNextPart()) {
 			$part = $path->nextPart();
 
 			if (isset($this->childrenServices[$part])) {
 				/** @var $service AbstractService */
 				$service = new $this->childrenServices[$part]();
-				return $service->processRequest($request, $path);
+				return $service->processActionRequest($request, $path);
 			}
 
 			$method = 'action' . StringUtils::toCamelCase($part);

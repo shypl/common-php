@@ -1,6 +1,6 @@
 <project default="build">
 
-	<taskdef classpath="build/shypl-ant-1.1.0.jar" resource="tasks.properties"/>
+	<taskdef classpath="build/shypl-ant-1.1.2.jar" resource="tasks.properties"/>
 
 	<target name="build">
 		<property file="project.properties"/>
