@@ -34,7 +34,7 @@ final class ClassLoader {
 	 * @param string $path
 	 */
 	public static function addPath($path) {
-		self::addIncludePath0($path, true);
+		self::addIncludePath($path, true);
 	}
 
 	/**
@@ -81,7 +81,7 @@ final class ClassLoader {
 	private static function loadIncludePaths() {
 		foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
 			if ($path != '.' && $path != '') {
-				self::addIncludePath0($path, false);
+				self::addIncludePath($path, false);
 			}
 		}
 	}
@@ -90,7 +90,7 @@ final class ClassLoader {
 	 * @param string $path
 	 * @param bool   $setInclude
 	 */
-	private static function addIncludePath0($path, $setInclude) {
+	private static function addIncludePath($path, $setInclude) {
 		$phar = strpos($path, 'phar://') === 0;
 
 		if ($phar) {
@@ -106,7 +106,14 @@ final class ClassLoader {
 
 		if ($realPath) {
 			if (!$phar && is_file($realPath)) {
-				$phar = true;
+				if (is_file($realPath)) {
+					$phar = true;
+				}
+				else {
+					foreach (glob($realPath . DIRECTORY_SEPARATOR . '*.phar') as $childPhar) {
+						self::addIncludePath('phar://' . $childPhar, true);
+					}
+				}
 			}
 
 			if ($phar) {
