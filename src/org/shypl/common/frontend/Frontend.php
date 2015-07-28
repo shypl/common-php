@@ -11,7 +11,6 @@ class Frontend {
 	 */
 	public static function run(AbstractRootService $rootService) {
 		$path = $_SERVER['SCRIPT_NAME'];
-		$path = trim($path, '/');
 		$path = substr($path, 0, strrpos($path, '/'));
 
 		(new Frontend(substr_count($path, '/'), $rootService))->process(HttpRequest::factoryFromGlobals());
