@@ -6,6 +6,15 @@ use org\shypl\common\net\HttpResponse;
 use org\shypl\common\util\StringUtils;
 
 abstract class AbstractService {
+	private $childrenServices;
+
+	/**
+	 * @param array $childrenServices
+	 */
+	public function __construct(array $childrenServices = []) {
+		$this->childrenServices = $childrenServices;
+	}
+
 	/**
 	 * @param HttpRequest $request
 	 * @param ActionPath  $path
@@ -14,7 +23,15 @@ abstract class AbstractService {
 	 */
 	public function processRequest(HttpRequest $request, ActionPath $path) {
 		if ($path->hasNextPart()) {
-			$method = "action" . StringUtils::toCamelCase($path->nextPart());
+			$part = $path->nextPart();
+
+			if (isset($this->childrenServices[$part])) {
+				/** @var $service AbstractService */
+				$service = new $this->childrenServices[$part]();
+				return $service->processRequest($request, $path);
+			}
+
+			$method = 'action' . StringUtils::toCamelCase($part);
 		}
 		else {
 			$method = 'actionMain';
