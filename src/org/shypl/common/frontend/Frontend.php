@@ -35,7 +35,7 @@ class Frontend {
 		$path = new ActionPath($this->rootPathOffset, $request->getUrl()->getPath());
 
 		try {
-			$response = $this->rootService->processActionRequest($request, $path);
+			$response = $this->rootService->processAction($request, $path);
 		}
 		catch (NotFoundException $e) {
 			$response = $this->rootService->processExceptionNotFound($request, $e);

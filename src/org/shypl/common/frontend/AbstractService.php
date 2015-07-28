@@ -21,23 +21,23 @@ abstract class AbstractService {
 	 *
 	 * @return HttpResponse
 	 */
-	public function processActionRequest(HttpRequest $request, ActionPath $path) {
-		$this->handleRequest($request);
-		$response = $this->processAction($request, $path);
-		$this->handleResponse($response);
+	public function processAction(HttpRequest $request, ActionPath $path) {
+		$this->handleActionRequest($request, $path);
+		$response = $this->executeAction($request, $path);
+		$this->handleActionResponse($response, $request, $path);
 		return $response;
 	}
 
 	/**
 	 * @param HttpRequest $request
 	 */
-	protected function handleRequest(HttpRequest $request) {
+	protected function handleActionRequest(HttpRequest $request, ActionPath $path) {
 	}
 
 	/**
 	 * @param HttpResponse $response
 	 */
-	protected function handleResponse(HttpResponse $response) {
+	protected function handleActionResponse(HttpResponse $response, HttpRequest $request, ActionPath $path) {
 	}
 
 	/**
@@ -46,14 +46,14 @@ abstract class AbstractService {
 	 *
 	 * @return HttpResponse
 	 */
-	protected function processAction(HttpRequest $request, ActionPath $path) {
+	protected function executeAction(HttpRequest $request, ActionPath $path) {
 		if ($path->hasNextPart()) {
 			$part = $path->nextPart();
 
 			if (isset($this->childrenServices[$part])) {
 				/** @var $service AbstractService */
 				$service = new $this->childrenServices[$part]();
-				return $service->processActionRequest($request, $path);
+				return $service->processAction($request, $path);
 			}
 
 			$method = 'action' . StringUtils::toCamelCase($part);
