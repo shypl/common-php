@@ -97,6 +97,39 @@ class App {
 	}
 
 	/**
+	 * @param string       $file
+	 * @param string|array $message
+	 */
+	public static function log($file, $message) {
+		$path = self::pathTo('private/log/' . str_replace('{date}', date('Ymd'), $file) . '.log');
+
+		if (is_array($message)) {
+			$message = join("\n", $message);
+		}
+
+		$message = str_replace('{date}', date('Y-m-d H:i:s'), $message);
+
+		$new = !file_exists($path);
+		if ((is_writable($path) || is_writable(dirname($path))) && ($handle = fopen($path, 'a'))) {
+
+			while (!flock($handle, LOCK_EX | LOCK_NB)) {
+				usleep(10);
+			}
+
+			fwrite($handle, $message . "\n");
+			fflush($handle);
+			if ($new) {
+				chmod($path, 0666);
+			}
+			flock($handle, LOCK_UN);
+			fclose($handle);
+		}
+		else {
+			throw new RuntimeException('Can not write log file "' . $path . '"');
+		}
+	}
+
+	/**
 	 * @return string
 	 */
 	private static function defineEvnName() {
