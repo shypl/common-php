@@ -90,12 +90,13 @@ class App {
 
 	/**
 	 * @param string $name
+	 * @param bool   $asObject
 	 *
 	 * @return array
 	 */
-	public static function config($name) {
+	public static function config($name, $asObject = false) {
 		$data = Yaml::parse(file_get_contents(self::pathToConfig($name . '.yml')), true, false, true);
-		return is_array($data) ? CollectionUtils::convertArrayToObject($data) : $data;
+		return $asObject && is_array($data) ? CollectionUtils::convertArrayToObject($data) : $data;
 	}
 
 	/**

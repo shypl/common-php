@@ -19,4 +19,20 @@ final class CollectionUtils {
 		}
 		return $object;
 	}
+
+	/**
+	 * @param stdClass $object
+	 *
+	 * @return array
+	 */
+	public static function convertObjectToArray(stdClass $object) {
+		$array = [];
+		foreach ($object as $key => $value) {
+			if ($value instanceof stdClass) {
+				$value = self::convertObjectToArray($value);
+			}
+			$array->$key = $value;
+		}
+		return $array;
+	}
 }
