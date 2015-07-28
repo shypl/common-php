@@ -47,6 +47,13 @@ final class ClassLoader {
 	}
 
 	/**
+	 * @return array
+	 */
+	public static function getPaths() {
+		return self::$includePaths;
+	}
+
+	/**
 	 * @param string $class
 	 *
 	 * @return bool
