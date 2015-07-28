@@ -2,6 +2,7 @@
 namespace org\shypl\common\core;
 
 use InvalidArgumentException;
+use org\shypl\common\util\CollectionUtils;
 use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -93,7 +94,8 @@ class App {
 	 * @return array
 	 */
 	public static function config($name) {
-		return Yaml::parse(file_get_contents(self::pathToConfig($name . '.yml')), true, false, true);
+		$data = Yaml::parse(file_get_contents(self::pathToConfig($name . '.yml')), true, false, true);
+		return is_array($data) ? CollectionUtils::convertArrayToObject($data) : $data;
 	}
 
 	/**
