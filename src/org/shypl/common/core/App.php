@@ -93,7 +93,7 @@ class App {
 	 * @return array
 	 */
 	public static function config($name) {
-		return Yaml::parse(self::pathToConfig($name . '.yml'), true, false, true);
+		return Yaml::parse(file_get_contents(self::pathToConfig($name . '.yml')), true, false, true);
 	}
 
 	/**
