@@ -4,7 +4,7 @@ namespace org\shypl\common\frontend;
 use Exception;
 use org\shypl\common\net\HttpRequest;
 
-class FrontendController {
+class Frontend {
 
 	/**
 	 * @param AbstractRootService $rootService
@@ -14,7 +14,7 @@ class FrontendController {
 		$path = trim($path, '/');
 		$path = substr($path, 0, strrpos($path, '/'));
 
-		(new FrontendController(substr_count($path, '/'), $rootService))->process(HttpRequest::factoryFromGlobals());
+		(new Frontend(substr_count($path, '/'), $rootService))->process(HttpRequest::factoryFromGlobals());
 	}
 
 	private $rootPathOffset;
