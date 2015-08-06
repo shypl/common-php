@@ -7,6 +7,22 @@ use org\shypl\common\net\HttpRequest;
 use org\shypl\common\net\HttpResponse;
 
 abstract class AbstractRootService extends AbstractService {
+
+	/**
+	 * @param string    $title
+	 * @param Exception $error
+	 *
+	 * @return string
+	 */
+	private static function prepareErrorMessage($title, Exception $error) {
+		$message = $error->getMessage();
+		if (empty($message)) {
+			return $title . "\n";
+		}
+
+		return $title . ': ' . $message . "\n";
+	}
+
 	/**
 	 * @param HttpRequest       $request
 	 * @param NotFoundException $error
@@ -14,7 +30,7 @@ abstract class AbstractRootService extends AbstractService {
 	 * @return HttpResponse
 	 */
 	public function processExceptionNotFound(HttpRequest $request, NotFoundException $error) {
-		return HttpResponse::factory(HttpResponse::TYPE_TEXT, "Not Found\n", 404);
+		return HttpResponse::factory(HttpResponse::TYPE_TEXT, self::prepareErrorMessage("Not Found", $error), 404);
 	}
 
 	/**
@@ -24,7 +40,7 @@ abstract class AbstractRootService extends AbstractService {
 	 * @return HttpResponse
 	 */
 	public function processExceptionBadRequest(HttpRequest $request, BadRequestException $error) {
-		return HttpResponse::factory(HttpResponse::TYPE_TEXT, "Bad Request\n", 400);
+		return HttpResponse::factory(HttpResponse::TYPE_TEXT, self::prepareErrorMessage("Bad Request", $error), 400);
 	}
 
 	/**
