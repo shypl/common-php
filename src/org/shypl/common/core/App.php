@@ -4,6 +4,7 @@ namespace org\shypl\common\core;
 use InvalidArgumentException;
 use org\shypl\common\util\CollectionUtils;
 use RuntimeException;
+use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
 require_once 'ErrorHandler.php';
@@ -92,7 +93,7 @@ class App {
 	 * @param string $name
 	 * @param bool   $asObject
 	 *
-	 * @return array
+	 * @return array|stdClass
 	 */
 	public static function config($name, $asObject = false) {
 		$data = Yaml::parse(file_get_contents(self::pathToConfig($name . '.yml')), true, false, true);
