@@ -15,7 +15,7 @@ class App {
 	private static $path;
 	private static $envName;
 	private static $cliMode;
-	private static $devMode;
+	private static $testMode;
 
 	/**
 	 * @param string $path
@@ -37,7 +37,7 @@ class App {
 
 		self::$envName = self::defineEvnName();
 		self::$cliMode = self::defineCliMode();
-		self::$devMode = self::defineDevMode();
+		self::$testMode = self::defineTestMode();
 
 		self::initErrorHandler();
 		self::initClassLoader();
@@ -60,8 +60,8 @@ class App {
 	/**
 	 * @return bool
 	 */
-	public static function isDevMode() {
-		return self::$devMode;
+	public static function isTestMode() {
+		return self::$testMode;
 	}
 
 	/**
@@ -154,12 +154,12 @@ class App {
 	/**
 	 * @return bool
 	 */
-	private static function defineDevMode() {
+	private static function defineTestMode() {
 		return !(self::$envName === 'prod' || self::$envName === 'production');
 	}
 
 	private static function initErrorHandler() {
-		ErrorHandler::init(self::$devMode, is_dir(self::pathTo('private/log')) ? self::pathTo('private/log/error-{date}.log') : null);
+		ErrorHandler::init(self::$testMode, is_dir(self::pathTo('private/log')) ? self::pathTo('private/log/error-{date}.log') : null);
 	}
 
 	private static function initClassLoader() {
