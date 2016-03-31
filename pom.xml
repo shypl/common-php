@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.shypl.common</groupId>
+	<artifactId>common-php</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>php</packaging>
+
+	<name>Php common</name>
+	<description>Php common assistants kit</description>
+	<url>https://github.com/shypl/common-php.git</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>shnyaka</id>
+			<name>Alexey Chuprina</name>
+			<email>shnyaka@gmail.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://github.com/shypl/common-php.git</connection>
+		<developerConnection>scm:git:https://github.com/shypl/common-php.git</developerConnection>
+		<url>https://github.com/shypl/common-php</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>shypl-releases</id>
+			<url>http://178.132.202.170:8080/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>shypl-snapshots</id>
+			<url>http://178.132.202.170:8080/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus2.deviapps.com</id>
+			<url>http://nexus2.deviapps.com/nexus/content/groups/dev-public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<repository>
+			<id>nexus2.deviapps.com</id>
+			<url>http://nexus2.deviapps.com/nexus/content/groups/dev-public/</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.phpmaven</groupId>
+				<artifactId>maven-php-plugin</artifactId>
+				<version>2.0.2</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.phpmaven</groupId>
+				<artifactId>maven-php-phar</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<pharConfig>
+						<stub><![CDATA[
+set_include_path('phar://' . __FILE__ . PATH_SEPARATOR . get_include_path());
+__HALT_COMPILER();]]></stub>
+					</pharConfig>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<mavenExecutorId>forked-path</mavenExecutorId>
+					<useReleaseProfile>false</useReleaseProfile>
+					<tagNameFormat>@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
