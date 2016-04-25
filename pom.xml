@@ -38,11 +38,11 @@
 	<distributionManagement>
 		<repository>
 			<id>shypl-releases</id>
-			<url>http://178.132.202.170:8080/nexus/content/repositories/releases/</url>
+			<url>http://nexus.shypl.org/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>shypl-snapshots</id>
-			<url>http://178.132.202.170:8080/nexus/content/repositories/snapshots/</url>
+			<url>http://nexus.shypl.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
