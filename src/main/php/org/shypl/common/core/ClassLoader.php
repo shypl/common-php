@@ -6,8 +6,8 @@ use RuntimeException;
 final class ClassLoader {
 	private static $inited;
 	private static $cacheFile;
-	private static $cache = [];
-	private static $includePaths = [];
+	private static $cache = array();
+	private static $includePaths = array();
 
 	/**
 	 * @param string $cacheFile
@@ -117,9 +117,9 @@ final class ClassLoader {
 					$phar = true;
 				}
 				else {
-					foreach (glob($realPath . DIRECTORY_SEPARATOR . '*.phar') as $childPhar) {
-						self::addIncludePath('phar://' . $childPhar, true);
-					}
+//					foreach (glob($realPath . DIRECTORY_SEPARATOR . '*.phar') as $childPhar) {
+//						self::addIncludePath('phar://' . $childPhar, true);
+//					}
 				}
 			}
 
@@ -196,11 +196,11 @@ final class ClassLoader {
 				self::$cache = include self::$cacheFile;
 			}
 			if (!is_array(self::$cache)) {
-				self::$cache = [];
+				self::$cache = array();
 			}
 		}
 		else {
-			self::$cache = [];
+			self::$cache = array();
 		}
 	}
 

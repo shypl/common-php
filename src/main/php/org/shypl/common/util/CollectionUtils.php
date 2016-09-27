@@ -26,7 +26,7 @@ final class CollectionUtils {
 	 * @return array
 	 */
 	public static function convertObjectToArray(stdClass $object) {
-		$array = [];
+		$array = array();
 		foreach ($object as $key => $value) {
 			if ($value instanceof stdClass) {
 				$value = self::convertObjectToArray($value);

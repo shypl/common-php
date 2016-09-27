@@ -14,7 +14,7 @@ class ActionPath {
 	 */
 	public function __construct($rootOffset, $path) {
 		$path = preg_replace('#//+#', '/', trim($path, '/'));
-		$path = $path === '' ? [] : explode('/', $path);
+		$path = $path === '' ? array() : explode('/', $path);
 		$this->path = $rootOffset == 0 ? $path : array_slice($path, $rootOffset);
 		$this->size = count($this->path);
 	}

@@ -39,8 +39,8 @@ class HttpResponse {
 	###
 
 	private $code;
-	private $headers = [];
-	private $cookies = [];
+	private $headers = array();
+	private $cookies = array();
 	private $body;
 
 	/**
@@ -71,12 +71,12 @@ class HttpResponse {
 	 * @param string $value
 	 */
 	public function setHeader($name, $value) {
-		$this->headers[$name] = [$value];
+		$this->headers[$name] = array($value);
 	}
 
 	public function addHeader($name, $value) {
 		if (!isset($this->headers[$name])) {
-			$this->headers[$name] = [$value];
+			$this->headers[$name] = array($value);
 		}
 		else {
 			$this->headers[$name][] = $value;
@@ -93,7 +93,7 @@ class HttpResponse {
 	 * @param bool   $httpOnly
 	 */
 	public function setCookie($name, $value, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = false) {
-		$this->cookies[$name] = [$value, $expire, $path, $domain, $secure, $httpOnly];
+		$this->cookies[$name] = array($value, $expire, $path, $domain, $secure, $httpOnly);
 	}
 
 	/**

@@ -12,8 +12,9 @@ class Frontend {
 	public static function run(AbstractRootService $rootService) {
 		$path = $_SERVER['SCRIPT_NAME'];
 		$path = substr($path, 0, strrpos($path, '/'));
-
-		(new Frontend(substr_count($path, '/'), $rootService))->process(HttpRequest::factoryFromGlobals());
+		
+		$frontend = new Frontend(substr_count($path, '/'), $rootService);
+		$frontend->process(HttpRequest::factoryFromGlobals());
 	}
 
 	private $rootPathOffset;

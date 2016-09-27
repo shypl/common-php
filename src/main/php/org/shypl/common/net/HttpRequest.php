@@ -23,7 +23,7 @@ class HttpRequest {
 			. $_SERVER['HTTP_HOST']
 			. $_SERVER['REQUEST_URI']);
 
-		$parameters = [];
+		$parameters = array();
 		parse_str($url->getQuery(), $parameters);
 
 		foreach ($_POST as $k => $v) {

@@ -11,7 +11,7 @@ abstract class AbstractService {
 	/**
 	 * @param array $childrenServices
 	 */
-	public function __construct(array $childrenServices = []) {
+	public function __construct(array $childrenServices = array()) {
 		$this->childrenServices = $childrenServices;
 	}
 

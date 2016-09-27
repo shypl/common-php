@@ -20,7 +20,7 @@ final class StringUtils {
 	 * @return array
 	 */
 	public static function toBytes($string, $hex = false) {
-		$bytes = [];
+		$bytes = array();
 		for ($i = 0, $l = self::byteLen($string); $i < $l; $i++) {
 			$byte = ord(self::byteCut($string, $i, 1));
 			if ($hex) {
@@ -67,7 +67,7 @@ final class StringUtils {
 			return '';
 		}
 
-		$string = str_replace(['_', '-'], ' ', $string);
+		$string = str_replace(array('_', '-'), ' ', $string);
 		$string = ucwords($string);
 		$string = str_replace(' ', '', $string);
 
