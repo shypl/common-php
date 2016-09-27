@@ -117,9 +117,12 @@ final class ClassLoader {
 					$phar = true;
 				}
 				else {
-//					foreach (glob($realPath . DIRECTORY_SEPARATOR . '*.phar') as $childPhar) {
-//						self::addIncludePath('phar://' . $childPhar, true);
-//					}
+					$glob = glob($realPath . DIRECTORY_SEPARATOR . '*.phar');
+					if (is_array($glob)) {
+						foreach ($glob as $childPhar) {
+							self::addIncludePath('phar://' . $childPhar, true);
+						}
+					}
 				}
 			}
 
